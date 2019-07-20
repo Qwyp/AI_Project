@@ -1,5 +1,6 @@
 import Project.Autoencoder as auto
 import Project.Plot as plot
+import Project.Save_Data as savedata
 import numpy as np
 from keras.datasets import cifar10
 
@@ -20,12 +21,18 @@ from keras.datasets import cifar10
 
 
 def handler():
-    'This function handles all operations needed for the training of the cifar10 dataset'
+    """This function handles all operations needed for the training and testing of the cifar10 dataset to predict the color of the images"""
 
     # 1. Load the dataset
+    (x_train,_),(x_test,_) = cifar10.load_data()
     # 2. Input Image dimensions
-    # 3. Create a folder for the images to be tested (in original color) + save the image
-    # 4. Create a folder for the images to tested in grayscale + save the image
+    img_rows = x_train.shape[1]
+    img_cols = x_train.shape[2]
+    channels = x_train.shape[3]
+
+    input_shape = (img_rows,img_cols,1)
+    # 3. Create a folder for the images to be tested
+    savedata.save_image()
     # Normalize output
     x_train = x_train.astype('float32') / 255
     x_test = x_test.astype('float32') / 255
@@ -39,6 +46,7 @@ def handler():
     input_shape = (img_rows,img_cols,1)
 
     # 5. Train the model + save each epoche
+    savedata.save_datamodel()
     # 6. Show the output of the tested images (new color)
     # 7. Show accuracy
 

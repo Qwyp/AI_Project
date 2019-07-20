@@ -43,7 +43,7 @@ def instantiate_autoencoder_model(input_images,decoder='decoder',encoder='encode
     autoencoder.summary()
     train_autoencoder(autoencoder)
 
-def train_autoencoder(autoencoder,batch_size):
+def train_autoencoder(autoencoder,batch_size,x_train_gray,x_train,x_test_gray,x_test):
     autoencoder.compile(loss = 'mse',optimizer ='adam')
     autoencoder.fit(x_train_gray,x_train,validation_data = (x_test_gray,x_test), epochs = 30, batch_size = batch_size)
     x_decoded = autoencoder.predict(x_test_gray)
