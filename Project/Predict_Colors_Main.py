@@ -19,7 +19,7 @@ from keras.datasets import cifar10
 # image directory
 
 
-def training_handler():
+def handler():
     'This function handles all operations needed for the training of the cifar10 dataset'
 
     # 1. Load the dataset
@@ -37,8 +37,9 @@ def training_handler():
     x_test_gray = x_test_gray.reshape(x_test_gray.shape[0], img_rows, img_cols, 1)
 
     input_shape = (img_rows,img_cols,1)
-    
+
     # 5. Train the model + save each epoche
     # 6. Show the output of the tested images (new color)
     # 7. Show accuracy
-    pass
+
+handler()
