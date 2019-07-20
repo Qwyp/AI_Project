@@ -1,70 +1,58 @@
 from keras.layers import Input, Dense
+from keras.layers import Reshape, Conv2DTranspose
+from keras.layers import Conv2D, Flatten
 from keras.models import Model
+from keras import backend as K
 
-# this is the size of our encoded representations
-encoding_dim = 32  # 32 floats -> compression of factor 24.5, assuming the input is 784 floats
 
-# this is our input placeholder
-input_img = Input(shape=(784,))
-# "encoded" is the encoded representation of the input
-encoded = Dense(encoding_dim, activation='relu')(input_img)
-# "decoded" is the lossy reconstruction of the input
-decoded = Dense(784, activation='sigmoid')(encoded)
+# Network parameters:
+    # input_shape
+    # batch_size = 32
+    # kernel_size = 3
+    # latent_dim = 256
+    # layer_filters = [64,128,256]
+# input_shape = (img_rows,img_cols,1)
+def create_encoder_model(input_shape,kernel_size,latent_dim,layer_filters):
+    input_images = Input(shape=input_shape,name='encoder_input')
 
-# this model maps an input to its reconstruction
-autoencoder = Model(input_img, decoded)
+    x = input_images
 
-# this model maps an input to its encoded representation
-encoder = Model(input_img, encoded)
+    for filters in layer_filters:
+        x = Conv2D(filters = filters,kernel_size=kernel_size,strides =2,activation = 'relu',padding ='same') (x)
 
-# create a placeholder for an encoded (32-dimensional) input
-encoded_input = Input(shape=(encoding_dim,))
-# retrieve the last layer of the autoencoder model
-decoder_layer = autoencoder.layers[-1]
-# create the decoder model
-decoder = Model(encoded_input, decoder_layer(encoded_input))
+    shape = K.int_shape(x)
+    x = Flatten()(x)
+    latent = Dense(latent_dim,name='latent_vector')(x)
+    instantiate_encoder_model(input_images,latent)
 
-autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+def instantiate_encoder_model(input_images,latent):
+    encoder = Model(input_images,latent,name ='encoder')
+    encoder.summary()
 
-from keras.datasets import mnist
-import numpy as np
-(x_train, _), (x_test, _) = mnist.load_data()
+def create_decoder_model(kernel_size,latent_dim,shape,layer_filters,x):
+    latent_inputs = Input(shape=(latent_dim,), name='decoder_input')
+    x = Dense(shape[1]*shape[2], shape[3])(latent_inputs)
+    x = Reshape((shape[1],shape[2],shape[3]))(x)
 
-x_train = x_train.astype('float32') / 255.
-x_test = x_test.astype('float32') / 255.
-x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
-x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
-print (x_train.shape)
-print (x_test.shape)
+    for filters in layer_filters[::-1]:
+        x = Conv2DTranspose(filters = filters, kernel_size = kernel_size,strides=2, activtion = 'relu', padding ='same')(x)
+    
+    output_images = Conv2DTranspose(filters = 1, kernel_size = kernel_size, padding='same',activation = 'sigmpod',name = 'decoder_output')(x)
+    instantiate_decoder_model(latent_inputs,output_images)
 
-autoencoder.fit(x_train, x_train,
-                epochs=50,
-                batch_size=256,
-                shuffle=True,
-                validation_data=(x_test, x_test))
+def instantiate_decoder_model(latent_inputs,output_images):
+    decoder = Model(latent_inputs,output_images,name = 'decoder')
+    decoder.summary()
 
-# encode and decode some digits
-# note that we take them from the *test* set
-encoded_imgs = encoder.predict(x_test)
-decoded_imgs = decoder.predict(encoded_imgs)
+def instantiate_autoencoder_model(input_images,decoder='decoder',encoder='encoder'):
+    autoencoder = Model(input_images,decoder(encoder(input_images)),name = 'autoencoder')
+    autoencoder.summary()
+    train_autoencoder(autoencoder)
 
-# use Matplotlib (don't ask)
-import matplotlib.pyplot as plt
+def train_autoencoder(autoencoder,batch_size):
+    autoencoder.compile(loss = 'mse',optimizer ='adam')
+    autoencoder.fit(x_train_gray,x_train,validation_data = (x_test_gray,x_test), epochs = 30, batch_size = batch_size)
+    x_decoded = autoencoder.predict(x_test_gray)
 
-n = 10  # how many digits we will display
-plt.figure(figsize=(20, 4))
-for i in range(n):
-    # display original
-    ax = plt.subplot(2, n, i + 1)
-    plt.imshow(x_test[i].reshape(28, 28))
-    plt.gray()
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
 
-    # display reconstruction
-    ax = plt.subplot(2, n, i + 1 + n)
-    plt.imshow(decoded_imgs[i].reshape(28, 28))
-    plt.gray()
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-plt.show()
+

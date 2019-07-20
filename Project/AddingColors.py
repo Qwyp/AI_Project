@@ -91,7 +91,7 @@ def setup_plot(display_plot_axis,plot_title, imgs, plot_savedirectory ,interpola
 def normalize_images(x_train,x_test,x_train_gray,x_test_gray):
     pass
 
-def reshap_images(x_train,x_test,img_rows,img_cols,channels):
+def reshape_images(x_train,x_test,img_rows,img_cols,channels):
     # Output CNN
     # Input CNN
     pass
@@ -100,7 +100,7 @@ def reshap_images(x_train,x_test,img_rows,img_cols,channels):
 # convert color train and test images to gray
 
 # display grayscale version of test images
-imgs = x_test_gray[:100]
+imgs = x_test_gray[:1]
 imgs = imgs.reshape((10, 10, img_rows, img_cols))
 imgs = np.vstack([np.hstack(i) for i in imgs])
 plt.figure()
@@ -221,3 +221,7 @@ plt.title('Colorized test images (Predicted)')
 plt.imshow(imgs, interpolation='none')
 plt.savefig('%s/colorized.png' % imgs_dir)
 plt.show()
+
+
+# Autoencoder file
+# 
