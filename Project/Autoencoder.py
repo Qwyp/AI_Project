@@ -5,13 +5,7 @@ from keras.models import Model
 from keras import backend as K
 
 
-# Network parameters:
-    # input_shape
-    # batch_size = 32
-    # kernel_size = 3
-    # latent_dim = 256
-    # layer_filters = [64,128,256]
-# input_shape = (img_rows,img_cols,1)
+
 def create_encoder_model(input_shape,kernel_size,latent_dim,layer_filters):
     input_images = Input(shape=input_shape,name='encoder_input')
 
