@@ -42,7 +42,6 @@ def handler():
 
     plot.display_images_original_color(x_test,img_rows,img_cols,channels,'saved_images')
     # 5. Display the grayscaled images of first 100 inputs
-    plot.display_images_grayscale(x_train,x_test,img_rows,img_cols,'saved_images')
     # 6. Build autoencoder Model
     auto.build_autoencoder_model(batch_size,input_shape,kernel_size,latent_dim,layer_filters,x_train,x_test,img_rows,img_cols,channels)
     # 5. Train the model + save each epoche

@@ -38,10 +38,9 @@ def convert_rgb_to_gray(rgb):
     # grayscale = 0.299*red + 0.587*green + 0.114*blue
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
-def display_images_grayscale(x_train,x_test,img_rows,img_cols,imgs_dir):
+def display_images_grayscale(x_test_gray,img_rows,img_cols,imgs_dir):
     # display first 100 images
-    x_train_gray = convert_rgb_to_gray(x_train)
-    x_test_gray = convert_rgb_to_gray(x_test)
+
     imgs = x_test_gray[:100]
     imgs = imgs.reshape((10, 10, img_rows, img_cols))
     imgs = np.vstack([np.hstack(i) for i in imgs])
