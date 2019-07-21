@@ -1,16 +1,20 @@
-import Project.Autoencoder as auto
-import Project.Plot as plot
-import Project.Save_Data as savedata
+import Autoencoder as auto
+import Plot as plot
+import Save_Data as savedata
 import numpy as np
 from keras.datasets import cifar10
+from keras.layers import Input, Dense
+from keras.layers import Reshape, Conv2DTranspose
+from keras.layers import Conv2D, Flatten
+from keras.models import Model
+from keras import backend as K
 
 # Global Parameteres and Initializations
 # Network parameters:
-    # input_shape
-    # batch_size = 32
-    # kernel_size = 3
-    # latent_dim = 256
-    # layer_filters = [64,128,256]
+batch_size = 32
+kernel_size = 3
+latent_dim = 256
+layer_filters = [64,128,256]
 # input_shape = (img_rows,img_cols,1)
 # img_cols
 # img_rows
@@ -31,23 +35,20 @@ def handler():
     channels = x_train.shape[3]
 
     input_shape = (img_rows,img_cols,1)
+
     # 3. Create a folder for the images to be tested
     savedata.save_image()
-    # Normalize output
-    x_train = x_train.astype('float32') / 255
-    x_test = x_test.astype('float32') / 255
-    # Normalize input
-    x_train_gray = x_train_gray.astype('float32') / 255
-    x_test_gray = x_test_gray.astype('float32') / 255
-    # Reshape Images
-    x_train_gray = x_train_gray.reshape(x_train_gray.shape[0], img_rows,img_cols, 1)
-    x_test_gray = x_test_gray.reshape(x_test_gray.shape[0], img_rows, img_cols, 1)
+    # 4. Display the first 100 images (input in original color)
 
-    input_shape = (img_rows,img_cols,1)
-
+    plot.display_images_original_color(x_test,img_rows,img_cols,channels,'saved_images')
+    # 5. Display the grayscaled images of first 100 inputs
+    plot.display_images_grayscale(x_train,x_test,img_rows,img_cols,'saved_images')
+    # 6. Build autoencoder Model
+    auto.build_autoencoder_model(batch_size,input_shape,kernel_size,latent_dim,layer_filters,x_train,x_test,img_rows,img_cols,channels)
     # 5. Train the model + save each epoche
-    savedata.save_datamodel()
+    #savedata.save_datamodel()
     # 6. Show the output of the tested images (new color)
+    #plot.plot_predicted_color_images(img_rows,img_cols,channels,'saved_images')
     # 7. Show accuracy
 
 handler()

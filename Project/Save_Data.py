@@ -11,4 +11,4 @@ def save_image():
     save_folder = os.path.join(os.getcwd(),'saved_images')
     if not os.path.isdir(save_folder):
         os.makedirs(save_folder)
-    filepath = os.paht.join(save_folder)
+    filepath = os.path.join(save_folder)

@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+
+
 def display_colorized_predicted_images(x_decoded,img_rows,img_cols,channels,imgs_dir):
     # display first 100 images
     imgs = x_decoded[:100]
@@ -20,10 +23,12 @@ def display_images_original_color(x_test,img_rows,img_cols,channels,imgs_dir):
     imgs = np.vstack([np.hstack(i) for i in imgs])
     plt.figure()
     plt.axis('off')
-    plt.title('Test color images (Ground Truth)')
+    plt.title('Cororized Test Images')
     plt.imshow(imgs, interpolation='none')
     plt.savefig('%s/test_color.png' % imgs_dir)
     plt.show()
+
+    # normalize output train and test color images
 
 
 
@@ -42,7 +47,7 @@ def display_images_grayscale(x_train,x_test,img_rows,img_cols,imgs_dir):
     imgs = np.vstack([np.hstack(i) for i in imgs])
     plt.figure()
     plt.axis('off')
-    plt.title('Test gray images (Input)')
+    plt.title('Grayscaled Input Images')
     plt.imshow(imgs, interpolation='none', cmap='gray')
     plt.savefig('%s/test_gray.png' % imgs_dir)
     plt.show()
