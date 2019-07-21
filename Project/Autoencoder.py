@@ -28,7 +28,7 @@ def build_autoencoder_model(batch_size,input_shape,kernel_size,latent_dim,layer_
     for filters in layer_filters[::-1]:
         x = Conv2DTranspose(filters = filters, kernel_size = kernel_size,strides=2, activation = 'relu', padding ='same')(x)
     
-    output_images = Conv2DTranspose(filters = 1, kernel_size = kernel_size, padding='same',activation = 'sigmoid',name = 'decoder_output')(x)
+    output_images = Conv2DTranspose(filters = channels, kernel_size = kernel_size, padding='same',activation = 'sigmoid',name = 'decoder_output')(x)
     
     # 4. Instantiate decoder Model
     decoder = Model(latent_inputs,output_images,name = 'decoder')
@@ -59,7 +59,7 @@ def build_autoencoder_model(batch_size,input_shape,kernel_size,latent_dim,layer_
     autoencoder.compile(loss = 'mse',optimizer ='adam')
     autoencoder.fit(x_train_gray,x_train,validation_data = (x_test_gray,x_test), epochs = 30, batch_size = batch_size)
     x_decoded = autoencoder.predict(x_test_gray)
-
+    # 7. Plot Predicted Image Colors
     plot.display_colorized_predicted_images(x_decoded,x_train.shape[1],x_train.shape[2],x_train.shape[3],'saved_images')
 
 
