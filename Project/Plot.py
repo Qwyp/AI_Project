@@ -1,8 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Used source: https://blog.keras.io/building-autoencoders-in-keras.html
 
-
+""" This file is plotting the different outcomes
+- Original Color Images
+- Grayscaled Images
+- Predicted Color from Images """
 
 def display_colorized_predicted_images(x_decoded,img_rows,img_cols,channels,imgs_dir):
     # display first 100 images
@@ -28,8 +32,6 @@ def display_images_original_color(x_test,img_rows,img_cols,channels,imgs_dir):
     plt.savefig('%s/test_color.png' % imgs_dir)
     plt.show()
 
-    # normalize output train and test color images
-
 
 
 def convert_rgb_to_gray(rgb):
@@ -39,7 +41,7 @@ def convert_rgb_to_gray(rgb):
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
 def display_images_grayscale(x_test_gray,img_rows,img_cols,imgs_dir):
-    # display first 100 images
+    # display first 100 images in grayscaled
 
     imgs = x_test_gray[:100]
     imgs = imgs.reshape((10, 10, img_rows, img_cols))

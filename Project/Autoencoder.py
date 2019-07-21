@@ -5,6 +5,9 @@ from keras.models import Model
 from keras import backend as K
 import Plot as plot
 
+# Source from: https://blog.keras.io/building-autoencoders-in-keras.html
+# Source from: https://keras.io/examples/cifar10_cnn/
+
 def build_autoencoder_model(batch_size,input_shape,kernel_size,latent_dim,layer_filters,x_train,x_test,img_rows,img_cols,channels):
     # 1. Build encoder model
     input_images = Input(shape=input_shape,name='encoder_input')
@@ -40,7 +43,7 @@ def build_autoencoder_model(batch_size,input_shape,kernel_size,latent_dim,layer_
     x_test_gray = plot.convert_rgb_to_gray(x_test)
 
     plot.display_images_grayscale(x_test_gray,x_train.shape[1],x_train.shape[2],'saved_images')
-
+    # Normalize input for colored train and test set
     x_train = x_train.astype('float32') / 255
     x_test = x_test.astype('float32') / 255
     # normalize input train and test grayscale images
@@ -62,7 +65,7 @@ def build_autoencoder_model(batch_size,input_shape,kernel_size,latent_dim,layer_
     # 7. Plot Predicted Image Colors
     plot.display_colorized_predicted_images(x_decoded,x_train.shape[1],x_train.shape[2],x_train.shape[3],'saved_images')
 
-
+###################################################
 def instantiate_encoder_model(input_images,latent):
     encoder = Model(input_images,latent,name ='encoder')
     encoder.summary()
